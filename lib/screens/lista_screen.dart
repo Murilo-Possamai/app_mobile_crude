@@ -16,7 +16,7 @@ class ListaScreen extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Tarefas'),
           bottom: const TabBar(
-            isScrollable: false,
+            isScrollable: true,
             labelColor: Colors.black,
             unselectedLabelColor: Color(0xFF757575),
             indicatorColor: Colors.black,
