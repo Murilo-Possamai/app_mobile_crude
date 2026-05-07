@@ -72,7 +72,10 @@ class TarefaCard extends StatelessWidget {
   }
 
   Color _corBorda(bool atrasada) {
-    return Colors.black;
+    if (tarefa.realizada) return const Color(0xFF757575);
+    if (atrasada) return const Color(0xFFFF3B30);
+    if (tarefa.importante) return Colors.black;
+    return const Color(0xFFE0E0E0);
   }
 }
 
