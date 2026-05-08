@@ -9,7 +9,8 @@ class TarefaCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final atrasada = _isAtrasada();
+    final vencida = !tarefa.realizada &&
+        (DateTime.tryParse(tarefa.dataPrevista)?.isBefore(DateTime.now()) ?? false);
 
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, '/detalhes', arguments: tarefa),
@@ -18,10 +19,7 @@ class TarefaCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: const Color(0xFFF5F5F5),
           border: Border(
-            left: BorderSide(
-              color: _corBorda(atrasada),
-              width: 3,
-            ),
+            left: BorderSide(color: _lateralColor(vencida), width: 3),
           ),
         ),
         child: Row(
@@ -46,48 +44,37 @@ class TarefaCard extends StatelessWidget {
                         tarefa.dataPrevista,
                         style: TextStyle(
                           fontSize: 12,
-                          color: atrasada ? const Color(0xFFFF3B30) : const Color(0xFF757575),
+                          color: vencida ? const Color(0xFFFF3B30) : const Color(0xFF757575),
                         ),
                       ),
                       const SizedBox(width: 8),
-                      _TipoBadge(tipo: tarefa.tipo),
+                      Text(
+                        tarefa.tipo,
+                        style: const TextStyle(
+                          fontSize: 11,
+                          color: Color(0xFF757575),
+                          letterSpacing: 0.5,
+                        ),
+                      ),
                     ],
                   ),
                 ],
               ),
             ),
             if (tarefa.importante)
-              const Icon(Icons.star, size: 16, color: Color(0xFFFF3B30)),
+              const Icon(Icons.bookmark, size: 16, color: Color(0xFFFF3B30)),
             if (tarefa.realizada)
-              const Icon(Icons.check_circle_outline, size: 16, color: Color(0xFF757575)),
+              const Icon(Icons.task_alt, size: 16, color: Color(0xFF757575)),
           ],
         ),
       ),
     );
   }
 
-  bool _isAtrasada() {
-    final data = DateTime.tryParse(tarefa.dataPrevista);
-    return data != null && data.isBefore(DateTime.now()) && !tarefa.realizada;
-  }
-
-  Color _corBorda(bool atrasada) {
+  Color _lateralColor(bool vencida) {
     if (tarefa.realizada) return const Color(0xFF757575);
-    if (atrasada) return const Color(0xFFFF3B30);
+    if (vencida) return const Color(0xFFFF3B30);
     if (tarefa.importante) return Colors.black;
     return const Color(0xFFE0E0E0);
-  }
-}
-
-class _TipoBadge extends StatelessWidget {
-  final String tipo;
-  const _TipoBadge({required this.tipo});
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      tipo,
-      style: const TextStyle(fontSize: 11, color: Color(0xFF757575), letterSpacing: 0.5),
-    );
   }
 }

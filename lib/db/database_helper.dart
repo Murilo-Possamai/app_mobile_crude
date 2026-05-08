@@ -42,7 +42,7 @@ class DatabaseHelper {
     return database.insert('tarefas', tarefa.toMap());
   }
 
-  Future<List<Tarefa>> listarTodas() async {
+  Future<List<Tarefa>> buscarTodas() async {
     final database = await db;
     final maps = await database.query('tarefas', orderBy: 'data_prevista ASC');
     return maps.map(Tarefa.fromMap).toList();

@@ -17,7 +17,7 @@ class _InserirScreenState extends State<InserirScreen> {
   final _tituloCtrl = TextEditingController();
   final _descricaoCtrl = TextEditingController();
 
-  String? _dataSelecionada;
+  String? _data;
   bool _importante = false;
   String _tipo = 'pessoal';
 
@@ -37,22 +37,22 @@ class _InserirScreenState extends State<InserirScreen> {
         child: ListView(
           padding: const EdgeInsets.all(24),
           children: [
-            _campo(
+            _buildCampo(
               controller: _tituloCtrl,
               label: 'Título',
               validator: (v) => v == null || v.isEmpty ? 'Informe o título' : null,
             ),
             const SizedBox(height: 16),
-            _campo(
+            _buildCampo(
               controller: _descricaoCtrl,
               label: 'Descrição',
               maxLines: 3,
               validator: (v) => v == null || v.isEmpty ? 'Informe a descrição' : null,
             ),
             const SizedBox(height: 16),
-            _DateField(
-              value: _dataSelecionada,
-              onSelected: (data) => setState(() => _dataSelecionada = data),
+            _CampoData(
+              value: _data,
+              onSelected: (d) => setState(() => _data = d),
             ),
             const SizedBox(height: 16),
             TipoSelector(
@@ -87,7 +87,7 @@ class _InserirScreenState extends State<InserirScreen> {
     );
   }
 
-  Widget _campo({
+  Widget _buildCampo({
     required TextEditingController controller,
     required String label,
     int maxLines = 1,
@@ -110,7 +110,7 @@ class _InserirScreenState extends State<InserirScreen> {
 
   void _salvar() async {
     if (!_formKey.currentState!.validate()) return;
-    if (_dataSelecionada == null) {
+    if (_data == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Selecione a data prevista')),
       );
@@ -120,7 +120,7 @@ class _InserirScreenState extends State<InserirScreen> {
     final tarefa = Tarefa(
       titulo: _tituloCtrl.text.trim(),
       descricao: _descricaoCtrl.text.trim(),
-      dataPrevista: _dataSelecionada!,
+      dataPrevista: _data!,
       importante: _importante,
       realizada: false,
       tipo: _tipo,
@@ -131,11 +131,11 @@ class _InserirScreenState extends State<InserirScreen> {
   }
 }
 
-class _DateField extends StatelessWidget {
+class _CampoData extends StatelessWidget {
   final String? value;
   final ValueChanged<String> onSelected;
 
-  const _DateField({required this.value, required this.onSelected});
+  const _CampoData({required this.value, required this.onSelected});
 
   @override
   Widget build(BuildContext context) {
@@ -161,7 +161,7 @@ class _DateField extends StatelessWidget {
         decoration: const InputDecoration(
           labelText: 'Data prevista',
           border: OutlineInputBorder(borderRadius: BorderRadius.zero),
-          suffixIcon: Icon(Icons.calendar_today_outlined, size: 18),
+          suffixIcon: Icon(Icons.event_note, size: 18),
         ),
         child: Text(
           value ?? 'Selecionar data',

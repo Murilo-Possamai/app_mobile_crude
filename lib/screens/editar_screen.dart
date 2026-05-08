@@ -19,7 +19,7 @@ class _EditarScreenState extends State<EditarScreen> {
   late final TextEditingController _tituloCtrl;
   late final TextEditingController _descricaoCtrl;
 
-  late String _dataSelecionada;
+  late String _data;
   late bool _importante;
   late String _tipo;
 
@@ -28,7 +28,7 @@ class _EditarScreenState extends State<EditarScreen> {
     super.initState();
     _tituloCtrl = TextEditingController(text: widget.tarefa.titulo);
     _descricaoCtrl = TextEditingController(text: widget.tarefa.descricao);
-    _dataSelecionada = widget.tarefa.dataPrevista;
+    _data = widget.tarefa.dataPrevista;
     _importante = widget.tarefa.importante;
     _tipo = widget.tarefa.tipo;
   }
@@ -49,22 +49,22 @@ class _EditarScreenState extends State<EditarScreen> {
         child: ListView(
           padding: const EdgeInsets.all(24),
           children: [
-            _campo(
+            _buildCampo(
               controller: _tituloCtrl,
               label: 'Título',
               validator: (v) => v == null || v.isEmpty ? 'Informe o título' : null,
             ),
             const SizedBox(height: 16),
-            _campo(
+            _buildCampo(
               controller: _descricaoCtrl,
               label: 'Descrição',
               maxLines: 3,
               validator: (v) => v == null || v.isEmpty ? 'Informe a descrição' : null,
             ),
             const SizedBox(height: 16),
-            _DateField(
-              value: _dataSelecionada,
-              onSelected: (data) => setState(() => _dataSelecionada = data),
+            _CampoData(
+              value: _data,
+              onSelected: (d) => setState(() => _data = d),
             ),
             const SizedBox(height: 16),
             TipoSelector(
@@ -99,7 +99,7 @@ class _EditarScreenState extends State<EditarScreen> {
     );
   }
 
-  Widget _campo({
+  Widget _buildCampo({
     required TextEditingController controller,
     required String label,
     int maxLines = 1,
@@ -126,7 +126,7 @@ class _EditarScreenState extends State<EditarScreen> {
     final atualizada = widget.tarefa.copyWith(
       titulo: _tituloCtrl.text.trim(),
       descricao: _descricaoCtrl.text.trim(),
-      dataPrevista: _dataSelecionada,
+      dataPrevista: _data,
       importante: _importante,
       tipo: _tipo,
     );
@@ -136,11 +136,11 @@ class _EditarScreenState extends State<EditarScreen> {
   }
 }
 
-class _DateField extends StatelessWidget {
+class _CampoData extends StatelessWidget {
   final String value;
   final ValueChanged<String> onSelected;
 
-  const _DateField({required this.value, required this.onSelected});
+  const _CampoData({required this.value, required this.onSelected});
 
   @override
   Widget build(BuildContext context) {
@@ -167,7 +167,7 @@ class _DateField extends StatelessWidget {
         decoration: const InputDecoration(
           labelText: 'Data prevista',
           border: OutlineInputBorder(borderRadius: BorderRadius.zero),
-          suffixIcon: Icon(Icons.calendar_today_outlined, size: 18),
+          suffixIcon: Icon(Icons.event_note, size: 18),
         ),
         child: Text(value),
       ),

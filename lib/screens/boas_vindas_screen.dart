@@ -15,14 +15,14 @@ class _BoasVindasScreenState extends State<BoasVindasScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await context.read<TarefaProvider>().carregar();
+      await context.read<TarefaProvider>().buscar();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<TarefaProvider>();
-    final proxima = provider.tarefaMaisProxima;
+    final proxima = provider.proximaTarefa;
 
     return Scaffold(
       body: SafeArea(

@@ -16,12 +16,12 @@ class DetalhesScreen extends StatelessWidget {
         title: const Text('Detalhes'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.edit_outlined),
+            icon: const Icon(Icons.mode_edit_outline),
             onPressed: () => Navigator.pushNamed(context, '/editar', arguments: tarefa),
           ),
           IconButton(
-            icon: const Icon(Icons.delete_outline),
-            onPressed: () => _confirmarDelete(context),
+            icon: const Icon(Icons.remove_circle_outline),
+            onPressed: () => _confirmarExclusao(context),
           ),
         ],
       ),
@@ -30,28 +30,29 @@ class DetalhesScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _Label('ID'),
-            _Valor('#${tarefa.id}'),
+            _Rotulo('Título'),
+            _Dado(tarefa.titulo),
             const SizedBox(height: 20),
-            _Label('Título'),
-            _Valor(tarefa.titulo),
+            _Rotulo('Descrição'),
+            _Dado(tarefa.descricao),
             const SizedBox(height: 20),
-            _Label('Descrição'),
-            _Valor(tarefa.descricao),
+            _Rotulo('Data prevista'),
+            _Dado(tarefa.dataPrevista),
             const SizedBox(height: 20),
-            _Label('Data prevista'),
-            _Valor(tarefa.dataPrevista),
-            const SizedBox(height: 20),
-            _Label('Tipo'),
-            _Valor(tarefa.tipo),
+            _Rotulo('Tipo'),
+            _Dado(tarefa.tipo),
             const SizedBox(height: 20),
             Row(
               children: [
-                _Chip(label: tarefa.importante ? 'Importante' : 'Normal',
-                    color: tarefa.importante ? const Color(0xFFFF3B30) : const Color(0xFF757575)),
+                _Tag(
+                  label: tarefa.importante ? 'Importante' : 'Normal',
+                  color: tarefa.importante ? const Color(0xFFFF3B30) : const Color(0xFF757575),
+                ),
                 const SizedBox(width: 8),
-                _Chip(label: tarefa.realizada ? 'Realizada' : 'Pendente',
-                    color: tarefa.realizada ? Colors.black : const Color(0xFF757575)),
+                _Tag(
+                  label: tarefa.realizada ? 'Realizada' : 'Pendente',
+                  color: tarefa.realizada ? Colors.black : const Color(0xFF757575),
+                ),
               ],
             ),
             const Spacer(),
@@ -65,7 +66,7 @@ class DetalhesScreen extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: const RoundedRectangleBorder(),
                   ),
-                  onPressed: () => _marcarRealizada(context),
+                  onPressed: () => _concluir(context),
                   child: const Text('Marcar como realizada'),
                 ),
               ),
@@ -75,19 +76,22 @@ class DetalhesScreen extends StatelessWidget {
     );
   }
 
-  void _marcarRealizada(BuildContext context) async {
-    await context.read<TarefaProvider>().marcarRealizada(tarefa);
+  void _concluir(BuildContext context) async {
+    await context.read<TarefaProvider>().concluir(tarefa);
     if (context.mounted) Navigator.pop(context);
   }
 
-  void _confirmarDelete(BuildContext context) {
+  void _confirmarExclusao(BuildContext context) {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
         title: const Text('Excluir tarefa'),
         content: const Text('Tem certeza que deseja excluir esta tarefa?'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancelar'),
+          ),
           TextButton(
             onPressed: () async {
               await context.read<TarefaProvider>().deletar(tarefa.id!);
@@ -104,20 +108,22 @@ class DetalhesScreen extends StatelessWidget {
   }
 }
 
-class _Label extends StatelessWidget {
+class _Rotulo extends StatelessWidget {
   final String text;
-  const _Label(this.text);
+  const _Rotulo(this.text);
 
   @override
   Widget build(BuildContext context) {
-    return Text(text,
-        style: const TextStyle(fontSize: 11, color: Color(0xFF757575), letterSpacing: 1.2));
+    return Text(
+      text,
+      style: const TextStyle(fontSize: 11, color: Color(0xFF757575), letterSpacing: 1.2),
+    );
   }
 }
 
-class _Valor extends StatelessWidget {
+class _Dado extends StatelessWidget {
   final String text;
-  const _Valor(this.text);
+  const _Dado(this.text);
 
   @override
   Widget build(BuildContext context) {
@@ -128,10 +134,10 @@ class _Valor extends StatelessWidget {
   }
 }
 
-class _Chip extends StatelessWidget {
+class _Tag extends StatelessWidget {
   final String label;
   final Color color;
-  const _Chip({required this.label, required this.color});
+  const _Tag({required this.label, required this.color});
 
   @override
   Widget build(BuildContext context) {

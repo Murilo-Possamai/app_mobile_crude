@@ -17,7 +17,7 @@ class ListaScreen extends StatefulWidget {
 class _ListaScreenState extends State<ListaScreen> {
   String? _filtroTipo;
 
-  List<Tarefa> _filtrar(List<Tarefa> tarefas) {
+  List<Tarefa> _aplicarFiltro(List<Tarefa> tarefas) {
     if (_filtroTipo == null) return tarefas;
     return tarefas.where((t) => t.tipo == _filtroTipo).toList();
   }
@@ -32,7 +32,7 @@ class _ListaScreenState extends State<ListaScreen> {
           actions: [
             PopupMenuButton<String?>(
               icon: Icon(
-                Icons.filter_list,
+                Icons.tune,
                 color: _filtroTipo != null ? Colors.black : const Color(0xFF757575),
               ),
               tooltip: 'Filtrar por tipo',
@@ -42,10 +42,18 @@ class _ListaScreenState extends State<ListaScreen> {
                   value: null,
                   child: Row(
                     children: [
-                      Icon(
-                        _filtroTipo == null ? Icons.radio_button_checked : Icons.radio_button_unchecked,
-                        size: 18,
-                        color: Colors.black,
+                      SizedBox(
+                        width: 18,
+                        child: _filtroTipo == null
+                            ? Container(
+                                width: 8,
+                                height: 8,
+                                decoration: const BoxDecoration(
+                                  color: Colors.black,
+                                  shape: BoxShape.circle,
+                                ),
+                              )
+                            : null,
                       ),
                       const SizedBox(width: 8),
                       const Text('Todos os tipos'),
@@ -57,10 +65,18 @@ class _ListaScreenState extends State<ListaScreen> {
                     value: tipo,
                     child: Row(
                       children: [
-                        Icon(
-                          _filtroTipo == tipo ? Icons.radio_button_checked : Icons.radio_button_unchecked,
-                          size: 18,
-                          color: Colors.black,
+                        SizedBox(
+                          width: 18,
+                          child: _filtroTipo == tipo
+                              ? Container(
+                                  width: 8,
+                                  height: 8,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.black,
+                                    shape: BoxShape.circle,
+                                  ),
+                                )
+                              : null,
                         ),
                         const SizedBox(width: 8),
                         Text(tipo[0].toUpperCase() + tipo.substring(1)),
@@ -90,11 +106,11 @@ class _ListaScreenState extends State<ListaScreen> {
           builder: (context, provider, _) {
             return TabBarView(
               children: [
-                _Lista(tarefas: _filtrar(provider.tarefas)),
-                _Lista(tarefas: _filtrar(provider.importantes)),
-                _Lista(tarefas: _filtrar(provider.realizadas)),
-                _Lista(tarefas: _filtrar(provider.naoRealizadas)),
-                _Lista(tarefas: _filtrar(provider.atrasadas)),
+                _Lista(tarefas: _aplicarFiltro(provider.tarefas)),
+                _Lista(tarefas: _aplicarFiltro(provider.importantes)),
+                _Lista(tarefas: _aplicarFiltro(provider.realizadas)),
+                _Lista(tarefas: _aplicarFiltro(provider.naoRealizadas)),
+                _Lista(tarefas: _aplicarFiltro(provider.atrasadas)),
               ],
             );
           },
@@ -126,8 +142,8 @@ class _Lista extends StatelessWidget {
     return ListView.separated(
       padding: const EdgeInsets.all(16),
       itemCount: tarefas.length,
-      separatorBuilder: (context, index) => const SizedBox(height: 8),
-      itemBuilder: (context, index) => TarefaCard(tarefa: tarefas[index]),
+      separatorBuilder: (_, __) => const SizedBox(height: 8),
+      itemBuilder: (_, index) => TarefaCard(tarefa: tarefas[index]),
     );
   }
 }
